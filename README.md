@@ -1,11 +1,11 @@
-About deepspeed
-===============
+About deepspeed-feedstock
+=========================
+
+Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/deepspeed-feedstock/blob/main/LICENSE.txt)
 
 Home: http://deepspeed.ai
 
 Package license: MIT
-
-Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/deepspeed-feedstock/blob/main/LICENSE.txt)
 
 Summary: DeepSpeed library
 
