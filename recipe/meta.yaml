@@ -16,6 +16,10 @@ package:
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: 1301e73b1f52ec857197c1189a263ec2b17c833312bf7cbac74ddb1d6aca142d
+  patches:
+    # remove torch.cuda.is_available() check when compiling ops
+    # https://github.com/microsoft/DeepSpeed/pull/3085
+    - 3085.diff
 
 build:
   number: {{ number }}
