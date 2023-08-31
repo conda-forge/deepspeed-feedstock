@@ -40,14 +40,10 @@ jobs:
         CONFIG: linux_64_c_compiler_version12cuda_compilerNonecuda_compiler_versionNonecxx_compiler_version12python3.9.____cpython
         UPLOAD_PACKAGES: 'True'
         DOCKER_IMAGE: quay.io/condaforge/linux-anvil-cos7-x86_64
+  swapfile_size: 0GiB
   timeoutInMinutes: 360
 
   steps:
-  - script: |
-         rm -rf /opt/ghc
-         df -h
-    displayName: Manage disk space
-
   # configure qemu binfmt-misc running.  This allows us to run docker containers
   # embedded qemu-static
   - script: |
