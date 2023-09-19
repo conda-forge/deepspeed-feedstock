@@ -1,4 +1,4 @@
-{% set name = "deepspeed" %}
+% set name = "deepspeed" %}
 {% set version = "0.9.5" %}
 {% set number = 1 %}
 
@@ -65,7 +65,7 @@ requirements:
     - psutil
     - py-cpuinfo
     # PyDantic <2.0.0 is required until DeepSpeed updates to be compatible with newer PyDantic versions.
-    - pydantic<2.0.0
+    - pydantic <2.0.0
     - tqdm
     - pytorch                                          # [cuda_compiler_version in (undefined, 'None')]
   run_constrained:
