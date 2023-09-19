@@ -1,6 +1,6 @@
 {% set name = "deepspeed" %}
 {% set version = "0.9.5" %}
-{% set number = 0 %}
+{% set number = 1 %}
 
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
@@ -64,7 +64,8 @@ requirements:
     - packaging
     - psutil
     - py-cpuinfo
-    - pydantic
+    # PyDantic <2.0.0 is required until DeepSpeed updates to be compatible with newer PyDantic versions.
+    - pydantic<2.0.0
     - tqdm
     - pytorch                                          # [cuda_compiler_version in (undefined, 'None')]
   run_constrained:
