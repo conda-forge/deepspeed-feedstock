@@ -1,4 +1,4 @@
-% set name = "deepspeed" %}
+{% set name = "deepspeed" %}
 {% set version = "0.9.5" %}
 {% set number = 1 %}
 
