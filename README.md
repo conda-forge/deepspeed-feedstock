@@ -242,4 +242,6 @@ Feedstock Maintainers
 =====================
 
 * [@hadim](https://github.com/hadim/)
+* [@loadams](https://github.com/loadams/)
+* [@weiji14](https://github.com/weiji14/)
 
