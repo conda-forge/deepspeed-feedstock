@@ -27,5 +27,7 @@ fi
 
 # Disable sparse_attn since it requires an exact version of triton==1.0.0
 export DS_BUILD_SPARSE_ATTN=0
+# Disable building with EvoFormerAttention which requires CUTLASS
+export DS_BUILD_EVOFORMER_ATTN=0
 
 ${PYTHON} -m pip install . -vv
