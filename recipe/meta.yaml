@@ -97,7 +97,7 @@ about:
   home: http://deepspeed.ai
   summary: DeepSpeed library
   dev_url: https://github.com/microsoft/DeepSpeed
-  license: MIT
+  license: Apache-2.0
   license_file: LICENSE
 
 extra:
