@@ -37,9 +37,10 @@ requirements:
   # requirements when CUDA is not available.
 
   build:
-    - python                                           # [build_platform != target_platform]
     - cross-python_{{ target_platform }}               # [build_platform != target_platform]
+    - python                                           # [build_platform != target_platform]
     - pytorch                                          # [(build_platform != target_platform) and cuda_compiler_version not in (undefined, 'None')]
+    - setuptools
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - {{ compiler('cuda') }}                           # [cuda_compiler_version not in (undefined, 'None')]
