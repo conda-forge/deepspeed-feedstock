@@ -29,7 +29,5 @@ fi
 export DS_BUILD_SPARSE_ATTN=0
 # Disable building with EvoFormerAttention which requires CUTLASS
 export DS_BUILD_EVOFORMER_ATTN=0
-# Disable building with ragged device ops
-export DS_BUILD_RAGGED_DEVICE_OPS=0
 
 ${PYTHON} -m pip install . -vv
