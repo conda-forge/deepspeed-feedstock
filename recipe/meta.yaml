@@ -1,5 +1,5 @@
 {% set name = "deepspeed" %}
-{% set version = "0.12.2" %}
+{% set version = "0.12.3" %}
 {% set number = 1 %}
 
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
@@ -15,7 +15,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 52c0f5963e1016e216d18c9cc47395f7bc7ad4107101c4f5759f232f7bee35f0
+  sha256: dc8a0c261589856743c3b3e7bf9829eded2cc8b2464a40456c3a997ed3a01a08
 
 build:
   number: {{ number }}
@@ -58,6 +58,7 @@ requirements:
     - pytorch                                          # [cuda_compiler_version not in (undefined, 'None')]
     - pytorch =*={{ torch_proc_type }}*                # [cuda_compiler_version not in (undefined, 'None')]
   run:
+    - ninja
     - hjson-py
     # NOTE(hadim): coming at https://github.com/conda-forge/staged-recipes/pull/19098
     # - ninja-python
