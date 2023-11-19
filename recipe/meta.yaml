@@ -40,7 +40,7 @@ requirements:
     - cross-python_{{ target_platform }}               # [build_platform != target_platform]
     - pip
     - python                                           # [build_platform != target_platform]
-    - pytorch                                          # [(build_platform != target_platform) and cuda_compiler_version not in (undefined, 'None')]
+    - pytorch =*={{ torch_proc_type }}*                # [build_platform != target_platform]
     - setuptools
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
