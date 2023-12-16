@@ -9,6 +9,12 @@
 {% set number = number + 200 %}
 {% endif %}
 
+{% if cuda_compiler_version in (None, "None", True, False) %}
+{% set cuda_major = 0 %}
+{% else %}
+{% set cuda_major = environ.get("cuda_compiler_version", "11.2").split(".")[0] | int %}
+{% endif %}
+
 package:
   name: {{ name|lower }}
   version: {{ version }}
@@ -22,7 +28,6 @@ build:
   string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version == "None"]
   skip: true  # [win]
-  skip: true  # [cuda_compiler_version in ("11.0", "11.1")]
 
   # NOTE(hadim): Without this I get `conda_build.exceptions.OverLinkingError` errors such as
   # `deepspeed/ops/adam/fused_adam_op.cpython-310-x86_64-linux-gnu.so): $RPATH/libc10_cuda.so not found in packages,
@@ -45,6 +50,11 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - {{ compiler('cuda') }}                           # [cuda_compiler_version not in (undefined, 'None')]
+    {% if cuda_major >= 12 %}
+    - libcublas-dev                                    # [build_platform != target_platform]
+    - libcusolver-dev                                  # [build_platform != target_platform]
+    - libcusparse-dev                                  # [build_platform != target_platform]
+    {% endif %}
   host:
     - python
     - pip
@@ -57,6 +67,11 @@ requirements:
     # The second gets the processor type
     - pytorch                                          # [cuda_compiler_version not in (undefined, 'None')]
     - pytorch =*={{ torch_proc_type }}*                # [cuda_compiler_version not in (undefined, 'None')]
+    {% if cuda_major >= 12 %}
+    - libcublas-dev
+    - libcusolver-dev
+    - libcusparse-dev
+    {% endif %}
   run:
     - hjson-py
     # NOTE(hadim): coming at https://github.com/conda-forge/staged-recipes/pull/19098
