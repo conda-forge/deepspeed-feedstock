@@ -1,6 +1,6 @@
 {% set name = "deepspeed" %}
 {% set version = "0.12.6" %}
-{% set number = 3 %}
+{% set number = 0 %}
 
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
@@ -77,7 +77,6 @@ requirements:
     - libcusparse-dev
     {% endif %}
   run:
-    - ninja
     - hjson-py
     # NOTE(hadim): coming at https://github.com/conda-forge/staged-recipes/pull/19098
     # - ninja-python
