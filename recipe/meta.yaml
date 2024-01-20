@@ -1,5 +1,5 @@
 {% set name = "deepspeed" %}
-{% set version = "0.12.6" %}
+{% set version = "0.13.0" %}
 {% set number = 0 %}
 
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
@@ -21,7 +21,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 69ea07c65ef6414f9cd67746672f1c23b4b629dc14c9177de103ac0c5b2e0ce4
+  sha256: e890adca061af36c775b40252306191c3029f0b8bd33cceefa9fa7ecbf350a05
 
 build:
   number: {{ number }}
