@@ -1,3 +1,5 @@
+azure:
+  free_disk_space: true
 bot:
   inspection: update-grayskull
 build_platform:
