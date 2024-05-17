@@ -1,6 +1,6 @@
 {% set name = "deepspeed" %}
 {% set version = "0.14.0" %}
-{% set number = 0 %}
+{% set number = 1 %}
 
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
@@ -48,9 +48,9 @@ requirements:
     - pytorch                                          # [(build_platform != target_platform) and cuda_compiler_version not in (undefined, 'None')]
     - setuptools
     - {{ compiler('c') }}
-    - {{ stdlib("c") }}
     - {{ compiler('cxx') }}
     - {{ compiler('cuda') }}                           # [cuda_compiler_version not in (undefined, 'None')]
+    - {{ stdlib("c") }}    
     {% if cuda_major >= 12 %}
     - cuda-profiler-api                                # [build_platform != target_platform]
     - libcublas-dev                                    # [build_platform != target_platform]
