@@ -48,6 +48,7 @@ requirements:
     - pytorch                                          # [(build_platform != target_platform) and cuda_compiler_version not in (undefined, 'None')]
     - setuptools
     - {{ compiler('c') }}
+    - {{ stdlib("c") }}
     - {{ compiler('cxx') }}
     - {{ compiler('cuda') }}                           # [cuda_compiler_version not in (undefined, 'None')]
     {% if cuda_major >= 12 %}
