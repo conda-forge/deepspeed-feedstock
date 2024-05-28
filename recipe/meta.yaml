@@ -1,6 +1,6 @@
 {% set name = "deepspeed" %}
-{% set version = "0.14.0" %}
-{% set number = 1 %}
+{% set version = "0.14.2" %}
+{% set number = 0 %}
 
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
@@ -21,7 +21,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 8a140b693f999776637ef004511243479795f6d3da2e3f92c1d508b756183917
+  sha256: 14d0cd5830bcb6d311ed5f8ce827cdaa678eebfc148ca744195a487df61270e3
 
 build:
   number: {{ number }}
@@ -48,9 +48,10 @@ requirements:
     - pytorch                                          # [(build_platform != target_platform) and cuda_compiler_version not in (undefined, 'None')]
     - setuptools
     - {{ compiler('c') }}
+    - {{ stdlib("c") }}
     - {{ compiler('cxx') }}
     - {{ compiler('cuda') }}                           # [cuda_compiler_version not in (undefined, 'None')]
-    - {{ stdlib("c") }}    
+    - {{ stdlib("c") }}
     {% if cuda_major >= 12 %}
     - cuda-profiler-api                                # [build_platform != target_platform]
     - libcublas-dev                                    # [build_platform != target_platform]
@@ -78,6 +79,7 @@ requirements:
     - libcusparse-dev
     {% endif %}
   run:
+    - ninja
     - hjson-py
     # NOTE(hadim): coming at https://github.com/conda-forge/staged-recipes/pull/19098
     # - ninja-python
