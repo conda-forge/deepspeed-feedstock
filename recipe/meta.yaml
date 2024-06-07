@@ -91,6 +91,13 @@ requirements:
     - python
     - pytorch                                          # [cuda_compiler_version in (undefined, 'None')]
     - tqdm
+    {% if cuda_major >= 12 %}
+    - cuda-compiler
+    - cuda-cudart-dev
+    - libcusparse-dev
+    - libcublas-dev
+    - libcusolver-dev
+    {% endif %}
   run_constrained:
     # 2022/02/05 hmaarrfk
     # While conda packaging seems to allow us to specify
