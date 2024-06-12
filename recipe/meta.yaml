@@ -78,7 +78,6 @@ requirements:
     - libcusparse-dev
     {% endif %}
   run:
-    - ninja
     - nvidia-ml-py
     - hjson-py
     # NOTE(hadim): coming at https://github.com/conda-forge/staged-recipes/pull/19098
