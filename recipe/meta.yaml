@@ -78,17 +78,17 @@ requirements:
     - libcusparse-dev
     {% endif %}
   run:
-    - nvidia-ml-py
     - hjson-py
     # NOTE(hadim): coming at https://github.com/conda-forge/staged-recipes/pull/19098
     # - ninja-python
     - numpy
+    - nvidia-ml-py
     - packaging >=20.0
     - psutil
     - py-cpuinfo
     # PyDantic <2.0.0 is required until DeepSpeed updates to be compatible with newer PyDantic versions.
+    # Remove this note after https://github.com/microsoft/DeepSpeed/pull/5167 is merged
     - pydantic
-    - pynvml
     - python
     - pytorch                                          # [cuda_compiler_version in (undefined, 'None')]
     - tqdm
