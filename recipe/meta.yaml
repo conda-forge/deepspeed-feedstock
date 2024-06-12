@@ -1,6 +1,6 @@
 {% set name = "deepspeed" %}
 {% set version = "0.14.3" %}
-{% set number = 1 %}
+{% set number = 0 %}
 
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
