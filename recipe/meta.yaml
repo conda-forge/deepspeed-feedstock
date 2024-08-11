@@ -62,6 +62,7 @@ requirements:
     - python
     - pip
     - git
+    - oneccl-devel                                     # [cuda_compiler_version not in (undefined, 'None')]
     - py-cpuinfo
     # For the `async_io` op
     - libaio  # [linux]
