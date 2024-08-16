@@ -83,7 +83,7 @@ requirements:
     # NOTE(hadim): coming at https://github.com/conda-forge/staged-recipes/pull/19098
     # - ninja-python
     - numpy
-    - nvidia-ml-py
+    - nvidia-ml-py                                     # [cuda_compiler_version not in (undefined, 'None')]
     - packaging >=20.0
     - psutil
     - py-cpuinfo
