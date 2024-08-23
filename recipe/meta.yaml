@@ -87,8 +87,6 @@ requirements:
     - packaging >=20.0
     - psutil
     - py-cpuinfo
-    # PyDantic <2.0.0 is required until DeepSpeed updates to be compatible with newer PyDantic versions.
-    # Remove this note after https://github.com/microsoft/DeepSpeed/pull/5167 is merged
     - pydantic >=2.0.0
     - python
     - pytorch                                          # [cuda_compiler_version in (undefined, 'None')]
