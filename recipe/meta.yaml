@@ -1,12 +1,12 @@
 {% set name = "deepspeed" %}
 {% set version = "0.14.5" %}
-{% set number = 0 %}
+{% set build = 1 %}
 
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
 # Build number trick to make sure CUDA builds are still picked
 {% if cuda_compiler_version != "None" %}
-{% set number = number + 200 %}
+{% set build = build + 200 %}
 {% endif %}
 
 {% if cuda_compiler_version in (None, "None", True, False) %}
@@ -24,19 +24,12 @@ source:
   sha256: 4f841224ab1bcc0307907ed10bac1861ee0cbaf99738e16f850fa6dab15ddc5a
 
 build:
-  number: {{ number }}
+  number: {{ build }}
   string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version == "None"]
   skip: true  # [win or (osx and x86_64)]
 
-  # NOTE(hadim): Without this I get `conda_build.exceptions.OverLinkingError` errors such as
-  # `deepspeed/ops/adam/fused_adam_op.cpython-310-x86_64-linux-gnu.so): $RPATH/libc10_cuda.so not found in packages,
-  # sysroot(s) nor the missing_dso_whitelist`
-  missing_dso_whitelist:
-    - '*'
-
 requirements:
-
   # NOTE(hadim): pytorch is only needed during the build in reqs.build and reqs.host when the ops are being built which
   # is only possible when CUDA is available. To prevent creating too many builds for pytorch-cpu we remove the pytorch
   # requirements when CUDA is not available.
