@@ -1,5 +1,5 @@
 {% set name = "deepspeed" %}
-{% set version = "0.14.5" %}
+{% set version = "0.15.0" %}
 {% set build = 1 %}
 
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
@@ -21,7 +21,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 4f841224ab1bcc0307907ed10bac1861ee0cbaf99738e16f850fa6dab15ddc5a
+  sha256: 745ff12afc85e829c55d19fae4127025443aecda5ebb1591b12b5fcc7c1cb198
 
 build:
   number: {{ build }}
@@ -80,9 +80,7 @@ requirements:
     - packaging >=20.0
     - psutil
     - py-cpuinfo
-    # PyDantic <2.0.0 is required until DeepSpeed updates to be compatible with newer PyDantic versions.
-    # Remove this note after https://github.com/microsoft/DeepSpeed/pull/5167 is merged
-    - pydantic
+    - pydantic >=2.0.0
     - python
     - pytorch                                          # [cuda_compiler_version in (undefined, 'None')]
     - tqdm
