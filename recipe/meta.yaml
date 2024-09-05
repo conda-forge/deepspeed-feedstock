@@ -52,13 +52,13 @@ requirements:
     - libcusparse-dev                                  # [build_platform != target_platform]
     {% endif %}
   host:
-    - python
-    - pip
     - git
-    - oneccl-devel                                     # [cuda_compiler_version not in (undefined, 'None')]
-    - py-cpuinfo
     # For the `async_io` op
-    - libaio  # [linux]
+    - libaio                                           # [linux]
+    - oneccl-devel                                     # [cuda_compiler_version not in (undefined, 'None')]
+    - pip
+    - py-cpuinfo
+    - python
     # Leaving two dependencies helps rerender correctly
     # The first gets filled in by the global pinnings
     # The second gets the processor type
