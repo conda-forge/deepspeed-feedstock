@@ -1,6 +1,6 @@
 {% set name = "deepspeed" %}
-{% set version = "0.15.0" %}
-{% set build = 1 %}
+{% set version = "0.15.1" %}
+{% set build = 0 %}
 
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
@@ -21,7 +21,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 745ff12afc85e829c55d19fae4127025443aecda5ebb1591b12b5fcc7c1cb198
+  sha256: 3520fd1b6ebd77456384dfeed048c1552d0054d499573071dfa136f9894a93e2
 
 build:
   number: {{ build }}
@@ -72,6 +72,7 @@ requirements:
     - libcusparse-dev
     {% endif %}
   run:
+    - ninja
     - hjson-py
     # NOTE(hadim): coming at https://github.com/conda-forge/staged-recipes/pull/19098
     # - ninja-python
