@@ -27,7 +27,7 @@ build:
   number: {{ build }}
   string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version == "None"]
-  skip: true  # [win or (osx and x86_64)]
+  skip: true  # [win]
 
 requirements:
   # NOTE(hadim): pytorch is only needed during the build in reqs.build and reqs.host when the ops are being built which
