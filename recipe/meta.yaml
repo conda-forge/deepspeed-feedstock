@@ -1,6 +1,6 @@
 {% set name = "deepspeed" %}
 {% set version = "0.15.1" %}
-{% set build = 1 %}
+{% set build = 2 %}
 
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
@@ -84,6 +84,7 @@ requirements:
     - pydantic >=2.0.0
     - python
     - pytorch                                          # [cuda_compiler_version in (undefined, 'None')]
+    - setuptools
     - tqdm
   run_constrained:
     # 2022/02/05 hmaarrfk
