@@ -73,9 +73,9 @@ requirements:
     - libcusparse-dev
     {% endif %}
   run:
-    - msgpack-python
     - ninja
     - hjson-py
+    - msgpack-python
     # NOTE(hadim): coming at https://github.com/conda-forge/staged-recipes/pull/19098
     # - ninja-python
     - numpy
