@@ -9,7 +9,7 @@ c_stdlib_version:
 cdt_name:
 - cos7
 channel_sources:
-- conda-forge/label/python_rc,conda-forge
+- conda-forge
 channel_targets:
 - conda-forge main
 cuda_compiler:
@@ -40,5 +40,3 @@ zip_keys:
   - cuda_compiler
   - cuda_compiler_version
   - docker_image
-- - python
-  - channel_sources
