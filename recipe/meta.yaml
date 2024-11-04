@@ -20,7 +20,7 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: d7f9821e4d6fc7c52191362c8338ea29fc435d81d4bf1a37bf87d72db32ff42a
 
 build:
