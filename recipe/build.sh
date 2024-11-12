@@ -8,9 +8,7 @@ if [[ ${cuda_compiler_version} != "None" ]]; then
   # Set the CUDA arch list from
   # https://github.com/conda-forge/pytorch-cpu-feedstock/blob/86592106fc0e4731eb011ac763a4f0429326930b/recipe/build_pytorch.sh#L123
 
-  if [[ ${cuda_compiler_version} == 11.2 ]]; then
-    export TORCH_CUDA_ARCH_LIST="6.0;6.1;7.0;7.5;8.0;8.6+PTX"
-  elif [[ ${cuda_compiler_version} == 11.8 ]]; then
+  if [[ ${cuda_compiler_version} == 11.8 ]]; then
     export TORCH_CUDA_ARCH_LIST="6.0;6.1;7.0;7.5;8.0;8.6;8.9+PTX"
   elif [[ ${cuda_compiler_version} == 12.0 ]]; then
     export TORCH_CUDA_ARCH_LIST="6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0+PTX"
@@ -25,11 +23,5 @@ fi
 
 # Disable sparse_attn since it requires an exact version of triton==1.0.0
 export DS_BUILD_SPARSE_ATTN=0
-# Disable building with EvoFormerAttention which requires CUTLASS
-export DS_BUILD_EVOFORMER_ATTN=0
-# Disable building with CUTLASS ops
-export DS_BUILD_CUTLASS_OPS=0
-# Disable building with ragged device ops
-export DS_BUILD_RAGGED_DEVICE_OPS=0
 
 ${PYTHON} -m pip install . -vv
