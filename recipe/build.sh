@@ -23,7 +23,5 @@ fi
 
 # Disable sparse_attn since it requires an exact version of triton==1.0.0
 export DS_BUILD_SPARSE_ATTN=0
-# Disable building with ragged device ops
-export DS_BUILD_RAGGED_DEVICE_OPS=0
 
 ${PYTHON} -m pip install . -vv
