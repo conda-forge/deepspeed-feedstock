@@ -74,7 +74,6 @@ requirements:
     {% endif %}
   run:
     - einops
-    - ninja
     - hjson-py
     - msgpack-python
     # NOTE(hadim): coming at https://github.com/conda-forge/staged-recipes/pull/19098
