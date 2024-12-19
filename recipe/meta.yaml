@@ -1,5 +1,5 @@
 {% set name = "deepspeed" %}
-{% set version = "0.16.1" %}
+{% set version = "0.16.2" %}
 {% set build = 0 %}
 
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
@@ -21,7 +21,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 058cb748d1c39f88580343fb69633fe45586225025522c1cf9f64b608a71820c
+  sha256: a5b45fdefae65ab48aa30873d3c4d6ec85993eee232aa3a088087c9b88b22281
 
 build:
   number: {{ build }}
@@ -73,6 +73,7 @@ requirements:
     - libcusparse-dev
     {% endif %}
   run:
+    - ninja
     - einops
     - hjson-py
     - msgpack-python
