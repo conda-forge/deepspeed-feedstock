@@ -75,7 +75,6 @@ requirements:
     - libcusparse-dev
     {% endif %}
   run:
-    - ninja
     - einops
     - hjson-py
     - msgpack-python
