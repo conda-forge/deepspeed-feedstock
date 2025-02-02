@@ -23,5 +23,9 @@ fi
 
 # Disable sparse_attn since it requires an exact version of triton==1.0.0
 export DS_BUILD_SPARSE_ATTN=0
+# Disable ccl_comm in non-x86_64
+if [[ ${arch} != "x86_64" ]]; then
+  export DS_BUILD_CCL_COMM=0
+fi
 
 ${PYTHON} -m pip install . -vv
