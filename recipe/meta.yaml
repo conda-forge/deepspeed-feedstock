@@ -55,7 +55,7 @@ requirements:
     - git
     # For the `async_io` op
     - libaio                                           # [linux]
-    - oneccl-devel                                     # [cuda_compiler_version not in (undefined, 'None')]
+    - oneccl-devel                                     # [linux64 and cuda_compiler_version not in (undefined, 'None')]
     - pip
     - py-cpuinfo
     - python
