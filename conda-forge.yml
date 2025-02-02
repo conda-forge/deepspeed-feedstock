@@ -9,6 +9,9 @@ build_platform:
 provider:
   linux_aarch64: default
   linux_ppc64le: default
+conda_build:
+  error_overlinking: true
+  pkg_format: '2'
 conda_forge_output_validation: true
 github:
   branch_name: main
