@@ -28,6 +28,8 @@ build:
   string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version == "None"]
   skip: true  # [win]
+  # CUDA 11.8 not available with Linux aarch64
+  skip: true  # [aarch64 and (cuda_compiler_version == "11.8")]
 
 requirements:
   # NOTE(hadim): pytorch is only needed during the build in reqs.build and reqs.host when the ops are being built which
@@ -55,7 +57,7 @@ requirements:
     - git
     # For the `async_io` op
     - libaio                                           # [linux]
-    - oneccl-devel                                     # [linux64 and cuda_compiler_version not in (undefined, 'None')]
+    - oneccl-devel                                     # [linux64 and (cuda_compiler_version not in (undefined, 'None'))]
     - pip
     - py-cpuinfo
     - python
