@@ -1,12 +1,12 @@
 {% set name = "deepspeed" %}
-{% set version = "0.14.5" %}
-{% set number = 0 %}
+{% set version = "0.16.3" %}
+{% set build = 0 %}
 
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
 # Build number trick to make sure CUDA builds are still picked
 {% if cuda_compiler_version != "None" %}
-{% set number = number + 200 %}
+{% set build = build + 200 %}
 {% endif %}
 
 {% if cuda_compiler_version in (None, "None", True, False) %}
@@ -20,23 +20,16 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 4f841224ab1bcc0307907ed10bac1861ee0cbaf99738e16f850fa6dab15ddc5a
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 3877b4d825fc940e3752f4e905f911a45623aa6f9f81b072a0d5deb87a2b785a
 
 build:
-  number: {{ number }}
+  number: {{ build }}
   string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version == "None"]
-  skip: true  # [win or (osx and x86_64)]
-
-  # NOTE(hadim): Without this I get `conda_build.exceptions.OverLinkingError` errors such as
-  # `deepspeed/ops/adam/fused_adam_op.cpython-310-x86_64-linux-gnu.so): $RPATH/libc10_cuda.so not found in packages,
-  # sysroot(s) nor the missing_dso_whitelist`
-  missing_dso_whitelist:
-    - '*'
+  skip: true  # [win]
 
 requirements:
-
   # NOTE(hadim): pytorch is only needed during the build in reqs.build and reqs.host when the ops are being built which
   # is only possible when CUDA is available. To prevent creating too many builds for pytorch-cpu we remove the pytorch
   # requirements when CUDA is not available.
@@ -59,18 +52,19 @@ requirements:
     - libcusparse-dev                                  # [build_platform != target_platform]
     {% endif %}
   host:
-    - python
-    - pip
     - git
-    - oneccl-devel                                     # [cuda_compiler_version not in (undefined, 'None')]
-    - py-cpuinfo
     # For the `async_io` op
-    - libaio  # [linux]
+    - libaio                                           # [linux]
+    - oneccl-devel                                     # [cuda_compiler_version not in (undefined, 'None')]
+    - pip
+    - py-cpuinfo
+    - python
     # Leaving two dependencies helps rerender correctly
     # The first gets filled in by the global pinnings
     # The second gets the processor type
     - pytorch                                          # [cuda_compiler_version not in (undefined, 'None')]
     - pytorch =*={{ torch_proc_type }}*                # [cuda_compiler_version not in (undefined, 'None')]
+    - setuptools
     {% if cuda_major >= 12 %}
     - cuda-profiler-api
     - libcublas-dev
@@ -79,7 +73,10 @@ requirements:
     - libcusparse-dev
     {% endif %}
   run:
+    - ninja
+    - einops
     - hjson-py
+    - msgpack-python
     # NOTE(hadim): coming at https://github.com/conda-forge/staged-recipes/pull/19098
     # - ninja-python
     - numpy
@@ -87,11 +84,10 @@ requirements:
     - packaging >=20.0
     - psutil
     - py-cpuinfo
-    # PyDantic <2.0.0 is required until DeepSpeed updates to be compatible with newer PyDantic versions.
-    # Remove this note after https://github.com/deepspeedai/DeepSpeed/pull/5167 is merged
-    - pydantic
+    - pydantic >=2.0.0
     - python
     - pytorch                                          # [cuda_compiler_version in (undefined, 'None')]
+    - setuptools
     - tqdm
   run_constrained:
     # 2022/02/05 hmaarrfk
