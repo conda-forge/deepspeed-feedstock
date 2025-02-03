@@ -9,7 +9,7 @@ Package license: Apache-2.0
 
 Summary: DeepSpeed library
 
-Development: https://github.com/microsoft/DeepSpeed
+Development: https://github.com/deepspeedai/DeepSpeed
 
 Current build status
 ====================
