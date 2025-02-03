@@ -88,7 +88,7 @@ requirements:
     - psutil
     - py-cpuinfo
     # PyDantic <2.0.0 is required until DeepSpeed updates to be compatible with newer PyDantic versions.
-    # Remove this note after https://github.com/microsoft/DeepSpeed/pull/5167 is merged
+    # Remove this note after https://github.com/deepspeedai/DeepSpeed/pull/5167 is merged
     - pydantic
     - python
     - pytorch                                          # [cuda_compiler_version in (undefined, 'None')]
@@ -119,7 +119,7 @@ test:
 about:
   home: http://deepspeed.ai
   summary: DeepSpeed library
-  dev_url: https://github.com/microsoft/DeepSpeed
+  dev_url: https://github.com/deepspeedai/DeepSpeed
   license: Apache-2.0
   license_file: LICENSE
 
