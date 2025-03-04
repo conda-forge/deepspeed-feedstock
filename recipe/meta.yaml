@@ -1,5 +1,5 @@
 {% set name = "deepspeed" %}
-{% set version = "0.16.3" %}
+{% set version = "0.16.4" %}
 {% set build = 0 %}
 
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
@@ -21,13 +21,15 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 3877b4d825fc940e3752f4e905f911a45623aa6f9f81b072a0d5deb87a2b785a
+  sha256: 495febfb6dd20423f44b1c4a1bb6da2cadbcaf9b07962e17f87d52edfeec9bba
 
 build:
   number: {{ build }}
   string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version == "None"]
   skip: true  # [win]
+  # pytorch in conda-forge does not support CUDA 11.8 as of v2.5
+  skip: true  # [cuda_compiler_version == "11.8"]
 
 requirements:
   # NOTE(hadim): pytorch is only needed during the build in reqs.build and reqs.host when the ops are being built which
@@ -73,7 +75,6 @@ requirements:
     - libcusparse-dev
     {% endif %}
   run:
-    - ninja
     - einops
     - hjson-py
     - msgpack-python
