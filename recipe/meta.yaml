@@ -12,7 +12,7 @@
   {% set cuda_major = environ.get("cuda_compiler_version", "11.8").split(".")[0] | int %}
   # Prioritize GPU builds
   {% set build_number = number + 200 %}
-  {% set build_string = 'cuda' ~ cuda_major %}
+  {% set build_string = 'cuda' ~ (cuda_compiler_version | replace('.', '')) %}
 {% endif %}
 
 package:
@@ -25,7 +25,7 @@ source:
 
 build:
   number: {{ build_number }}
-  string: {{ build_string }}_py{{ py }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}
+  string: {{ build_string }}py{{ py }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}
   skip: true  # [win]
 
 requirements:
