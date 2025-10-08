@@ -20,9 +20,6 @@ build:
   skip: win
 
 requirements:
-  # NOTE(hadim): pytorch is only needed during the build in reqs.build and reqs.host when the ops are being built which
-  # is only possible when CUDA is available. To prevent creating too many builds for pytorch-cpu we remove the pytorch
-  # requirements when CUDA is not available.
   build:
     - ${{ compiler('c') }}
     - ${{ compiler('cxx') }}
@@ -31,10 +28,6 @@ requirements:
       then:
         - cross-python_${{ target_platform }}
         - python
-    - if: (build_platform != target_platform) and cuda_compiler_version != "None"
-      then: pytorch
-    - pip
-    - setuptools
     - if: cuda_compiler_version != "None"
       then:
         - ${{ compiler('cuda') }}
@@ -44,9 +37,7 @@ requirements:
         - libcusolver-dev
         - libcusparse-dev
   host:
-    - git
     - pip
-    - py-cpuinfo
     - python
     - setuptools
     # For the `async_io` op
@@ -60,11 +51,7 @@ requirements:
         - libcusolver-dev
         - libcusparse-dev
         - oneccl-devel
-        # Leaving two dependencies helps rerender correctly
-        # The first gets filled in by the global pinnings
-        # The second gets the processor type
-        - pytorch
-        - pytorch * ${{ torch_proc_type }}*
+        - pytorch * [build=${{ torch_proc_type }}*]
   run:
     - einops
     - hjson-py
@@ -75,23 +62,11 @@ requirements:
     - py-cpuinfo
     - pydantic >=2.0.0
     - python
-    - pytorch
+    - pytorch * [build=${{ torch_proc_type }}*]
     - tqdm
     - if: cuda_compiler_version != "None"
       then:
         - nvidia-ml-py
-  run_constraints:
-    # 2022/02/05 hmaarrfk
-    # While conda packaging seems to allow us to specify
-    # constraints on the same package in different lines
-    # the resulting package doesn't have the ability to
-    # be specified in multiples lines
-    # This makes it tricky to use run_exports
-    # we add the GPU constraint in the run_constrained
-    # to allow us to have "two" constraints on the
-    # running package
-    - if: cuda_compiler_version != "None"
-      then: pytorch * ${{ torch_proc_type }}*
 
 tests:
   - python:
@@ -100,7 +75,7 @@ tests:
       pip_check: true
   - requirements:
       run:
-        - pip
+        - ninja
     script:
       - ds_report
       - deepspeed --help
