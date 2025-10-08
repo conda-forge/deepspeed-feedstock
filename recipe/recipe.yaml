@@ -97,7 +97,7 @@ tests:
   - python:
       imports:
         - deepspeed
-      pip_check: false
+      pip_check: true
   - requirements:
       run:
         - pip
