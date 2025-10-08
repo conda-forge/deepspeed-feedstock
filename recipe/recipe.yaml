@@ -1,0 +1,118 @@
+schema_version: 1
+
+context:
+  name: deepspeed
+  version: 0.18.0
+  build_number: 0
+  torch_proc_type: ${{ "cuda" ~ cuda_compiler_version | version_to_buildstring if cuda_compiler_version != "None" else "cpu" }}
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/${{ name }}-${{ version }}.tar.gz
+  sha256: 285901ac891a580d834fe6fd0f6c94a32d17433ecf0a3c789739b15a6c5d80fb
+
+build:
+  number: ${{ build_number }}
+  string: ${{ torch_proc_type }}_py${{ python | version_to_buildstring }}_h${{ hash }}_${{ build_number }}
+  skip: win
+
+requirements:
+  # NOTE(hadim): pytorch is only needed during the build in reqs.build and reqs.host when the ops are being built which
+  # is only possible when CUDA is available. To prevent creating too many builds for pytorch-cpu we remove the pytorch
+  # requirements when CUDA is not available.
+  build:
+    - ${{ compiler('c') }}
+    - ${{ compiler('cxx') }}
+    - ${{ stdlib("c") }}
+    - if: build_platform != target_platform
+      then:
+        - cross-python_${{ target_platform }}
+        - python
+    - if: (build_platform != target_platform) and cuda_compiler_version != "None"
+      then: pytorch
+    - pip
+    - setuptools
+    - if: cuda_compiler_version != "None"
+      then:
+        - ${{ compiler('cuda') }}
+        - cuda-profiler-api
+        - libcublas-dev
+        - libcurand-dev
+        - libcusolver-dev
+        - libcusparse-dev
+  host:
+    - git
+    - pip
+    - py-cpuinfo
+    - python
+    - setuptools
+    # For the `async_io` op
+    - if: linux
+      then: libaio
+    - if: cuda_compiler_version != "None"
+      then:
+        - cuda-profiler-api
+        - libcublas-dev
+        - libcurand-dev
+        - libcusolver-dev
+        - libcusparse-dev
+        - oneccl-devel
+        # Leaving two dependencies helps rerender correctly
+        # The first gets filled in by the global pinnings
+        # The second gets the processor type
+        - pytorch
+        - pytorch * ${{ torch_proc_type }}*
+  run:
+    - einops
+    - hjson-py
+    - msgpack-python
+    - numpy
+    - packaging >=20.0
+    - psutil
+    - py-cpuinfo
+    - pydantic >=2.0.0
+    - python
+    - pytorch
+    - tqdm
+    - if: cuda_compiler_version != "None"
+      then:
+        - nvidia-ml-py
+  run_constraints:
+    # 2022/02/05 hmaarrfk
+    # While conda packaging seems to allow us to specify
+    # constraints on the same package in different lines
+    # the resulting package doesn't have the ability to
+    # be specified in multiples lines
+    # This makes it tricky to use run_exports
+    # we add the GPU constraint in the run_constrained
+    # to allow us to have "two" constraints on the
+    # running package
+    - if: cuda_compiler_version != "None"
+      then: pytorch * ${{ torch_proc_type }}*
+
+tests:
+  - python:
+      imports:
+        - deepspeed
+      pip_check: false
+  - requirements:
+      run:
+        - pip
+    script:
+      - ds_report
+      - deepspeed --help
+
+about:
+  homepage: http://deepspeed.ai
+  repository: https://github.com/deepspeedai/DeepSpeed
+  summary: DeepSpeed library
+  license: Apache-2.0
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - loadams
+    - weiji14
