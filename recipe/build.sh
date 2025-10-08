@@ -1,6 +1,11 @@
 #!/bin/bash
 set -ex
 
+# Fix for https://github.com/conda-forge/deepspeed-feedstock/issues/1 to get pip_check
+# working even without ninja as runtime dependency, xref
+# https://github.com/conda-forge/causal-conv1d-feedstock/blob/bf0344b4740b6320723570071d9f7d6a2f5fd38e/recipe/meta.yaml#L20
+sed -i.bak 's@ninja@#ninja@g' requirements/requirements.txt
+
 # Deepspeed ops cannot be built without CUDA
 if [[ ${cuda_compiler_version} != "None" ]]; then
   export DS_BUILD_OPS=1
