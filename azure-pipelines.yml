@@ -7,7 +7,7 @@ stages:
   jobs:
     - job: Skip
       pool:
-        vmImage: 'ubuntu-latest'
+        vmImage: 'ubuntu-22.04'
       variables:
         DECODE_PERCENTS: 'false'
         RET: 'true'
