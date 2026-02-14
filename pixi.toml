@@ -5,7 +5,7 @@
 
 [workspace]
 name = "deepspeed-feedstock-sdvillal"
-version = "3.54.2"  # conda-smithy version used to generate this file
+version = "3.55.1"  # conda-smithy version used to generate this file
 description = "Pixi configuration for conda-forge/deepspeed-feedstock-sdvillal"
 authors = ["@conda-forge/deepspeed-feedstoc"]
 channels = ["conda-forge"]
@@ -29,12 +29,6 @@ description = "Build deepspeed-feedstock-sdvillal with variant linux_64_c_stdlib
 [tasks."inspect-linux_64_c_stdlib_version2.17cuda_compiler_version12.9python3.10.____cpython"]
 cmd = "inspect_artifacts --recipe-dir recipe -m .ci_support/linux_64_c_stdlib_version2.17cuda_compiler_version12.9python3.10.____cpython.yaml"
 description = "List contents of deepspeed-feedstock-sdvillal packages built for variant linux_64_c_stdlib_version2.17cuda_compiler_version12.9python3.10.____cpython"
-[tasks."build-linux_64_c_stdlib_version2.17cuda_compiler_version12.9python3.11.____cpython"]
-cmd = "rattler-build build --recipe recipe -m .ci_support/linux_64_c_stdlib_version2.17cuda_compiler_version12.9python3.11.____cpython.yaml"
-description = "Build deepspeed-feedstock-sdvillal with variant linux_64_c_stdlib_version2.17cuda_compiler_version12.9python3.11.____cpython directly (without setup scripts)"
-[tasks."inspect-linux_64_c_stdlib_version2.17cuda_compiler_version12.9python3.11.____cpython"]
-cmd = "inspect_artifacts --recipe-dir recipe -m .ci_support/linux_64_c_stdlib_version2.17cuda_compiler_version12.9python3.11.____cpython.yaml"
-description = "List contents of deepspeed-feedstock-sdvillal packages built for variant linux_64_c_stdlib_version2.17cuda_compiler_version12.9python3.11.____cpython"
 [tasks."build-linux_64_c_stdlib_version2.17cuda_compiler_version12.9python3.12.____cpython"]
 cmd = "rattler-build build --recipe recipe -m .ci_support/linux_64_c_stdlib_version2.17cuda_compiler_version12.9python3.12.____cpython.yaml"
 description = "Build deepspeed-feedstock-sdvillal with variant linux_64_c_stdlib_version2.17cuda_compiler_version12.9python3.12.____cpython directly (without setup scripts)"
@@ -59,12 +53,6 @@ description = "Build deepspeed-feedstock-sdvillal with variant linux_64_c_stdlib
 [tasks."inspect-linux_64_c_stdlib_version2.17cuda_compiler_versionNonepython3.10.____cpython"]
 cmd = "inspect_artifacts --recipe-dir recipe -m .ci_support/linux_64_c_stdlib_version2.17cuda_compiler_versionNonepython3.10.____cpython.yaml"
 description = "List contents of deepspeed-feedstock-sdvillal packages built for variant linux_64_c_stdlib_version2.17cuda_compiler_versionNonepython3.10.____cpython"
-[tasks."build-linux_64_c_stdlib_version2.17cuda_compiler_versionNonepython3.11.____cpython"]
-cmd = "rattler-build build --recipe recipe -m .ci_support/linux_64_c_stdlib_version2.17cuda_compiler_versionNonepython3.11.____cpython.yaml"
-description = "Build deepspeed-feedstock-sdvillal with variant linux_64_c_stdlib_version2.17cuda_compiler_versionNonepython3.11.____cpython directly (without setup scripts)"
-[tasks."inspect-linux_64_c_stdlib_version2.17cuda_compiler_versionNonepython3.11.____cpython"]
-cmd = "inspect_artifacts --recipe-dir recipe -m .ci_support/linux_64_c_stdlib_version2.17cuda_compiler_versionNonepython3.11.____cpython.yaml"
-description = "List contents of deepspeed-feedstock-sdvillal packages built for variant linux_64_c_stdlib_version2.17cuda_compiler_versionNonepython3.11.____cpython"
 [tasks."build-linux_64_c_stdlib_version2.17cuda_compiler_versionNonepython3.12.____cpython"]
 cmd = "rattler-build build --recipe recipe -m .ci_support/linux_64_c_stdlib_version2.17cuda_compiler_versionNonepython3.12.____cpython.yaml"
 description = "Build deepspeed-feedstock-sdvillal with variant linux_64_c_stdlib_version2.17cuda_compiler_versionNonepython3.12.____cpython directly (without setup scripts)"
@@ -89,12 +77,6 @@ description = "Build deepspeed-feedstock-sdvillal with variant linux_64_c_stdlib
 [tasks."inspect-linux_64_c_stdlib_version2.28cuda_compiler_version13.0python3.10.____cpython"]
 cmd = "inspect_artifacts --recipe-dir recipe -m .ci_support/linux_64_c_stdlib_version2.28cuda_compiler_version13.0python3.10.____cpython.yaml"
 description = "List contents of deepspeed-feedstock-sdvillal packages built for variant linux_64_c_stdlib_version2.28cuda_compiler_version13.0python3.10.____cpython"
-[tasks."build-linux_64_c_stdlib_version2.28cuda_compiler_version13.0python3.11.____cpython"]
-cmd = "rattler-build build --recipe recipe -m .ci_support/linux_64_c_stdlib_version2.28cuda_compiler_version13.0python3.11.____cpython.yaml"
-description = "Build deepspeed-feedstock-sdvillal with variant linux_64_c_stdlib_version2.28cuda_compiler_version13.0python3.11.____cpython directly (without setup scripts)"
-[tasks."inspect-linux_64_c_stdlib_version2.28cuda_compiler_version13.0python3.11.____cpython"]
-cmd = "inspect_artifacts --recipe-dir recipe -m .ci_support/linux_64_c_stdlib_version2.28cuda_compiler_version13.0python3.11.____cpython.yaml"
-description = "List contents of deepspeed-feedstock-sdvillal packages built for variant linux_64_c_stdlib_version2.28cuda_compiler_version13.0python3.11.____cpython"
 [tasks."build-linux_64_c_stdlib_version2.28cuda_compiler_version13.0python3.12.____cpython"]
 cmd = "rattler-build build --recipe recipe -m .ci_support/linux_64_c_stdlib_version2.28cuda_compiler_version13.0python3.12.____cpython.yaml"
 description = "Build deepspeed-feedstock-sdvillal with variant linux_64_c_stdlib_version2.28cuda_compiler_version13.0python3.12.____cpython directly (without setup scripts)"
@@ -119,12 +101,6 @@ description = "Build deepspeed-feedstock-sdvillal with variant osx_arm64_python3
 [tasks."inspect-osx_arm64_python3.10.____cpython"]
 cmd = "inspect_artifacts --recipe-dir recipe -m .ci_support/osx_arm64_python3.10.____cpython.yaml"
 description = "List contents of deepspeed-feedstock-sdvillal packages built for variant osx_arm64_python3.10.____cpython"
-[tasks."build-osx_arm64_python3.11.____cpython"]
-cmd = "rattler-build build --recipe recipe -m .ci_support/osx_arm64_python3.11.____cpython.yaml"
-description = "Build deepspeed-feedstock-sdvillal with variant osx_arm64_python3.11.____cpython directly (without setup scripts)"
-[tasks."inspect-osx_arm64_python3.11.____cpython"]
-cmd = "inspect_artifacts --recipe-dir recipe -m .ci_support/osx_arm64_python3.11.____cpython.yaml"
-description = "List contents of deepspeed-feedstock-sdvillal packages built for variant osx_arm64_python3.11.____cpython"
 [tasks."build-osx_arm64_python3.12.____cpython"]
 cmd = "rattler-build build --recipe recipe -m .ci_support/osx_arm64_python3.12.____cpython.yaml"
 description = "Build deepspeed-feedstock-sdvillal with variant osx_arm64_python3.12.____cpython directly (without setup scripts)"
