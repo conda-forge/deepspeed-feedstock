@@ -1,11 +1,6 @@
 #!/bin/bash
 set -ex
 
-# Enforce pyc file recreation. We can remove when this is fixed:
-#   https://github.com/prefix-dev/rattler-build/issues/2147
-# For context, see: https://github.com/conda-forge/deepspeed-feedstock/pull/114
-find "${SP_DIR}" -name '*.pyc' -delete
-
 # Fix for https://github.com/conda-forge/deepspeed-feedstock/issues/1 to get pip_check
 # working even without ninja as runtime dependency, xref
 # https://github.com/conda-forge/causal-conv1d-feedstock/blob/bf0344b4740b6320723570071d9f7d6a2f5fd38e/recipe/meta.yaml#L20
