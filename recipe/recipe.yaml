@@ -20,7 +20,6 @@ build:
   skip:
     - win
     - osx and x86_64
-    - match(python, "!=3.11")
 
 requirements:
   build:
