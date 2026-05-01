@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: deepspeed
-  version: "0.18.8"
+  version: "0.18.9"
   build_number: 0
   torch_proc_type: ${{ "cuda" ~ cuda_compiler_version | version_to_buildstring if cuda_compiler_version != "None" else "cpu" }}
 
@@ -12,7 +12,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/${{ name }}-${{ version }}.tar.gz
-  sha256: e4e051a144b0c74270c46e4970139f9a86a61ff26959c5e463000c4a93b99304
+  sha256: ee4818dcf342794f74f429a0aeebef90291ec808fa82609c5140c23e665c4011
 
 build:
   number: ${{ build_number }}
