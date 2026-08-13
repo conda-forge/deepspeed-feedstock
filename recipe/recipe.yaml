@@ -53,7 +53,7 @@ requirements:
         - libcusolver-dev
         - libcusparse-dev
         - oneccl-devel
-        - pytorch * [build=${{ torch_proc_type }}*]
+        - pytorch >=2.0.0 [build=${{ torch_proc_type }}*]
   run:
     - einops
     - hjson-py
@@ -64,7 +64,7 @@ requirements:
     - py-cpuinfo
     - pydantic >=2.0.0
     - python
-    - pytorch * [build=${{ torch_proc_type }}*]
+    - pytorch >=2.0.0 [build=${{ torch_proc_type }}*]
     - tqdm
     - if: cuda_compiler_version != "None"
       then:
