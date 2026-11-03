@@ -6,7 +6,6 @@ set -ex
 # https://github.com/conda-forge/causal-conv1d-feedstock/blob/bf0344b4740b6320723570071d9f7d6a2f5fd38e/recipe/meta.yaml#L20
 sed -i.bak 's@ninja@#ninja@g' requirements/requirements.txt
 
-# Deepspeed ops cannot be built without CUDA
 if [[ ${cuda_compiler_version} != "None" ]]; then
   export DS_BUILD_OPS=1
 
@@ -28,8 +27,32 @@ if [[ ${cuda_compiler_version} != "None" ]]; then
   esac
 
 else
-  export DS_BUILD_OPS=0
+  # Pre-compile the native CPU ops (cpu_adam, cpu_adagrad, cpu_lion,
+  # fused_adam, deepspeed_shm_comm, async_io, pin_memory)
+  export DS_ACCELERATOR=cpu
+  export DS_BUILD_OPS=1
+  # conda-forge's oneccl-devel only ships proprietary static libraries that
+  # need SYCL and Intel MPI; use torch's gloo + the SHM op for CPU comms.
+  export DS_BUILD_CCL_COMM=0
 fi
+
+# The op builders default to -march=native and pick SIMD intrinsics from the
+# build machine's CPU flags. Use portable settings instead (see patch 0001).
+# Leave -march to the compiler flags from conda-forge's activation scripts.
+export DS_CPU_ARCH=""
+case ${target_platform} in
+  linux-64)
+    # conda-forge's x86_64 baseline has no AVX, so use the scalar code path
+    export DS_SIMD_WIDTH="-D__SCALAR__"
+    ;;
+  linux-aarch64|osx-arm64)
+    # NEON is part of the AArch64 baseline
+    export DS_SIMD_WIDTH="-D__NEON__"
+    ;;
+  *)
+    export DS_SIMD_WIDTH="-D__SCALAR__"
+    ;;
+esac
 
 # Disable sparse_attn since it requires an exact version of triton==1.0.0
 export DS_BUILD_SPARSE_ATTN=0

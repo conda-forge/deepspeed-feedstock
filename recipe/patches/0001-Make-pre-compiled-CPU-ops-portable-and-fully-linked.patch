@@ -1,0 +1,51 @@
+diff --git a/op_builder/builder.py b/op_builder/builder.py
+index 58350ba..15c2be9 100644
+--- a/op_builder/builder.py
++++ b/op_builder/builder.py
+@@ -426,6 +426,11 @@ class OpBuilder(ABC):
+         return [x for x in args if len(x) > 0]
+ 
+     def cpu_arch(self):
++        # Allow packagers to override the detected CPU architecture flag so that
++        # pre-compiled ops are not tied to the build machine (-march=native).
++        # An empty value means no -march/-mcpu flag is added.
++        if os.environ.get("DS_CPU_ARCH") is not None:
++            return os.environ["DS_CPU_ARCH"]
+         try:
+             from cpuinfo import get_cpu_info
+         except ImportError as e:
+@@ -527,6 +532,10 @@ class OpBuilder(ABC):
+         return hwcap is not None and hwcap & (1 << (ord('V') - ord('A'))) != 0  # COMPAT_HWCAP_ISA_V
+ 
+     def simd_width(self):
++        # Allow packagers to override the detected SIMD width define, e.g.
++        # DS_SIMD_WIDTH=-D__SCALAR__ for a portable build.
++        if os.environ.get("DS_SIMD_WIDTH") is not None:
++            return os.environ["DS_SIMD_WIDTH"]
+         try:
+             from cpuinfo import get_cpu_info
+         except ImportError as e:
+diff --git a/op_builder/cpu/builder.py b/op_builder/cpu/builder.py
+index d881842..e80a27e 100644
+--- a/op_builder/cpu/builder.py
++++ b/op_builder/cpu/builder.py
+@@ -25,7 +25,8 @@ class CPUOpBuilder(OpBuilder):
+                                    sources=self.strip_empty_entries(self.sources()),
+                                    include_dirs=include_dirs,
+                                    libraries=self.strip_empty_entries(self.libraries_args()),
+-                                   extra_compile_args=compile_args)
++                                   extra_compile_args=compile_args,
++                                   extra_link_args=self.strip_empty_entries(self.extra_ldflags()))
+ 
+         return cpp_ext
+ 
+@@ -36,5 +37,9 @@ class CPUOpBuilder(OpBuilder):
+         args += [CPU_ARCH, '-fopenmp', SIMD_WIDTH]
+         return args
+ 
++    def extra_ldflags(self):
++        # The CPU ops are compiled with -fopenmp, so link the OpenMP runtime too
++        return ['-fopenmp']
++
+     def libraries_args(self):
+         return []
