@@ -55,7 +55,7 @@ requirements:
       then: libaio
     # OpenMP runtime for the CPU ops built with -fopenmp
     - if: linux
-      then: _openmp_mutex
+      then: libgomp
     - if: osx
       then: llvm-openmp
     - if: cuda_compiler_version != "None"
