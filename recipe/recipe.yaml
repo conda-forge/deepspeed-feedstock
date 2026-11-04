@@ -19,6 +19,9 @@ source:
     # (-march=native) so pre-compiled CPU ops are portable, and pass link
     # flags (-fopenmp, -laio) when pre-compiling CPU ops.
     - patches/0001-Make-pre-compiled-CPU-ops-portable-and-fully-linked.patch
+    # nvcc rejects redeclaring a template parameter as a local; rename the
+    # local, keeping the semantics nvcc 12 compiled (unlike deepspeedai/DeepSpeed#8808)
+    - patches/0002-fp_quantizer-do-not-redeclare-template-parameter.patch
 
 build:
   number: ${{ build_number }}
@@ -39,6 +42,7 @@ requirements:
     - if: cuda_compiler_version != "None"
       then:
         - ${{ compiler('cuda') }}
+        - ninja
         - cuda-profiler-api
         - libcublas-dev
         - libcurand-dev
@@ -65,7 +69,8 @@ requirements:
         - libcurand-dev
         - libcusolver-dev
         - libcusparse-dev
-        - oneccl-devel
+        # For the `gds` op
+        - libcufile-dev
   run:
     - einops
     - hjson-py
@@ -87,14 +92,12 @@ tests:
       imports:
         - deepspeed
       pip_check: true
-  - if: cuda_compiler_version == "None"
-    then:
-      # No ninja/compiler here: ops must load from the pre-compiled extensions
-      - files:
-          recipe:
-            - test_cpu_ops.py
-        script:
-          - python test_cpu_ops.py
+  # No ninja/compiler here: ops must load from the pre-compiled extensions
+  - files:
+      recipe:
+        - test_ops.py
+    script:
+      - python test_ops.py ${{ torch_proc_type }}
   - requirements:
       run:
         - ninja

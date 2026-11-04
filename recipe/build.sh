@@ -7,7 +7,18 @@ set -ex
 sed -i.bak 's@ninja@#ninja@g' requirements/requirements.txt
 
 if [[ ${cuda_compiler_version} != "None" ]]; then
+  # There is no GPU on CI, so DeepSpeed would fall back to the CPU accelerator
+  # and build only the CPU ops. Force the CUDA accelerator's op builders.
+  export DS_ACCELERATOR=cuda
   export DS_BUILD_OPS=1
+  # Need deepspeed-kernels (dskernels), which is not packaged on conda-forge
+  export DS_BUILD_CUTLASS_OPS=0
+  export DS_BUILD_RAGGED_DEVICE_OPS=0
+  # Needs a CUTLASS source checkout
+  export DS_BUILD_EVOFORMER_ATTN=0
+  # Compile each extension's sources in parallel
+  export DS_ENABLE_NINJA=1
+  export MAX_JOBS=${CPU_COUNT}
 
   # Set the CUDA arch list from
   # https://github.com/conda-forge/pytorch-cpu-feedstock/blob/238fe50d9f9a3957584d3713531a81eec91e9f0e/recipe/build.sh#L217-L240
@@ -31,10 +42,12 @@ else
   # fused_adam, deepspeed_shm_comm, async_io, pin_memory)
   export DS_ACCELERATOR=cpu
   export DS_BUILD_OPS=1
-  # conda-forge's oneccl-devel only ships proprietary static libraries that
-  # need SYCL and Intel MPI; use torch's gloo + the SHM op for CPU comms.
-  export DS_BUILD_CCL_COMM=0
 fi
+
+# Skip `deepspeed_ccl_comm` (CPU accelerator): conda-forge's oneccl-devel only
+# ships proprietary static libraries that need SYCL and Intel MPI; use torch's
+# gloo + the SHM op for CPU comms instead.
+export DS_BUILD_CCL_COMM=0
 
 # The op builders default to -march=native and pick SIMD intrinsics from the
 # build machine's CPU flags. Use portable settings instead (see patch 0001).
