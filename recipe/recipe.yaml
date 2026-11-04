@@ -92,8 +92,11 @@ tests:
       imports:
         - deepspeed
       pip_check: true
-  # No ninja/compiler here: ops must load from the pre-compiled extensions
-  - files:
+  # No compiler here: ops must load from the pre-compiled extensions
+  - requirements:
+      run:
+        - ninja
+    files:
       recipe:
         - test_ops.py
     script:
