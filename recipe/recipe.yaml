@@ -3,7 +3,7 @@ schema_version: 1
 context:
   name: deepspeed
   version: "0.19.9"
-  build_number: 1
+  build_number: 2
   torch_proc_type: ${{ "cuda" if cuda_compiler_version != "None" else "cpu" }}
   build_string_prefix: ${{ "cuda" ~ cuda_compiler_version | version_to_buildstring if cuda_compiler_version != "None" else "cpu" }}
 
@@ -29,12 +29,20 @@ build:
   skip:
     - win
     - osx and x86_64
+  variant:
+    # Prefer the higher x86_64 microarch levels when the CPU supports them
+    down_prioritize_variant: ${{ 4 - (microarch_level | default(1) | int) if x86_64 else 0 }}
+    use_keys:
+      - CROSSCOMPILING_EMULATOR
 
 requirements:
   build:
     - ${{ compiler('c') }}
     - ${{ compiler('cxx') }}
     - ${{ stdlib("c") }}
+    # Sets -march=x86-64-v<level> and run-exports the __archspec guard
+    - if: target_platform == "linux-64"
+      then: x86_64-microarch-level ==${{ microarch_level }}
     - if: build_platform != target_platform
       then:
         - cross-python_${{ target_platform }}
@@ -88,25 +96,23 @@ requirements:
         - nvidia-ml-py
 
 tests:
-  - python:
-      imports:
-        - deepspeed
-      pip_check: true
   # No compiler here: ops must load from the pre-compiled extensions
   - requirements:
       run:
         - ninja
+        - pip
     files:
       recipe:
         - test_ops.py
     script:
-      - python test_ops.py ${{ torch_proc_type }}
+      - ${CROSSCOMPILING_EMULATOR} python test_ops.py ${{ torch_proc_type }}
+      - ${CROSSCOMPILING_EMULATOR} python -m pip check
   - requirements:
       run:
         - ninja
     script:
-      - ds_report
-      - deepspeed --help
+      - ${CROSSCOMPILING_EMULATOR} ds_report
+      - ${CROSSCOMPILING_EMULATOR} deepspeed --help
 
 about:
   homepage: http://deepspeed.ai

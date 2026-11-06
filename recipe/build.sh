@@ -55,8 +55,21 @@ export DS_BUILD_CCL_COMM=0
 export DS_CPU_ARCH=""
 case ${target_platform} in
   linux-64)
-    # conda-forge's x86_64 baseline has no AVX, so use the scalar code path
-    export DS_SIMD_WIDTH="-D__SCALAR__"
+    # Pick the SIMD code path from the x86_64 microarch level of this variant
+    case ${microarch_level} in
+      4)
+        export DS_CPU_ARCH="-march=x86-64-v4"
+        export DS_SIMD_WIDTH="-D__AVX512__"
+        ;;
+      3)
+        export DS_CPU_ARCH="-march=x86-64-v3"
+        export DS_SIMD_WIDTH="-D__AVX256__"
+        ;;
+      *)
+        # conda-forge's x86_64 baseline has no AVX, so use the scalar code path
+        export DS_SIMD_WIDTH="-D__SCALAR__"
+        ;;
+    esac
     ;;
   linux-aarch64|osx-arm64)
     # NEON is part of the AArch64 baseline
