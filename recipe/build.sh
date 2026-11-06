@@ -6,9 +6,19 @@ set -ex
 # https://github.com/conda-forge/causal-conv1d-feedstock/blob/bf0344b4740b6320723570071d9f7d6a2f5fd38e/recipe/meta.yaml#L20
 sed -i.bak 's@ninja@#ninja@g' requirements/requirements.txt
 
-# Deepspeed ops cannot be built without CUDA
 if [[ ${cuda_compiler_version} != "None" ]]; then
+  # There is no GPU on CI, so DeepSpeed would fall back to the CPU accelerator
+  # and build only the CPU ops. Force the CUDA accelerator's op builders.
+  export DS_ACCELERATOR=cuda
   export DS_BUILD_OPS=1
+  # Need deepspeed-kernels (dskernels), which is not packaged on conda-forge
+  export DS_BUILD_CUTLASS_OPS=0
+  export DS_BUILD_RAGGED_DEVICE_OPS=0
+  # Needs a CUTLASS source checkout
+  export DS_BUILD_EVOFORMER_ATTN=0
+  # Compile each extension's sources in parallel
+  export DS_ENABLE_NINJA=1
+  export MAX_JOBS=${CPU_COUNT}
 
   # Set the CUDA arch list from
   # https://github.com/conda-forge/pytorch-cpu-feedstock/blob/238fe50d9f9a3957584d3713531a81eec91e9f0e/recipe/build.sh#L217-L240
@@ -28,8 +38,34 @@ if [[ ${cuda_compiler_version} != "None" ]]; then
   esac
 
 else
-  export DS_BUILD_OPS=0
+  # Pre-compile the native CPU ops (cpu_adam, cpu_adagrad, cpu_lion,
+  # fused_adam, deepspeed_shm_comm, async_io, pin_memory)
+  export DS_ACCELERATOR=cpu
+  export DS_BUILD_OPS=1
 fi
+
+# Skip `deepspeed_ccl_comm` (CPU accelerator): conda-forge's oneccl-devel only
+# ships proprietary static libraries that need SYCL and Intel MPI; use torch's
+# gloo + the SHM op for CPU comms instead.
+export DS_BUILD_CCL_COMM=0
+
+# The op builders default to -march=native and pick SIMD intrinsics from the
+# build machine's CPU flags. Use portable settings instead (see patch 0001).
+# Leave -march to the compiler flags from conda-forge's activation scripts.
+export DS_CPU_ARCH=""
+case ${target_platform} in
+  linux-64)
+    # conda-forge's x86_64 baseline has no AVX, so use the scalar code path
+    export DS_SIMD_WIDTH="-D__SCALAR__"
+    ;;
+  linux-aarch64|osx-arm64)
+    # NEON is part of the AArch64 baseline
+    export DS_SIMD_WIDTH="-D__NEON__"
+    ;;
+  *)
+    export DS_SIMD_WIDTH="-D__SCALAR__"
+    ;;
+esac
 
 # Disable sparse_attn since it requires an exact version of triton==1.0.0
 export DS_BUILD_SPARSE_ATTN=0
