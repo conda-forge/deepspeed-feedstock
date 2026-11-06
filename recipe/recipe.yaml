@@ -32,6 +32,8 @@ build:
   variant:
     # Prefer the higher x86_64 microarch levels when the CPU supports them
     down_prioritize_variant: ${{ 4 - (microarch_level | default(1) | int) if x86_64 else 0 }}
+    use_keys:
+      - CROSSCOMPILING_EMULATOR
 
 requirements:
   build:
@@ -94,25 +96,23 @@ requirements:
         - nvidia-ml-py
 
 tests:
-  - python:
-      imports:
-        - deepspeed
-      pip_check: true
   # No compiler here: ops must load from the pre-compiled extensions
   - requirements:
       run:
         - ninja
+        - pip
     files:
       recipe:
         - test_ops.py
     script:
-      - python test_ops.py ${{ torch_proc_type }}
+      - ${CROSSCOMPILING_EMULATOR} python test_ops.py ${{ torch_proc_type }}
+      - ${CROSSCOMPILING_EMULATOR} python -m pip check
   - requirements:
       run:
         - ninja
     script:
-      - ds_report
-      - deepspeed --help
+      - ${CROSSCOMPILING_EMULATOR} ds_report
+      - ${CROSSCOMPILING_EMULATOR} deepspeed --help
 
 about:
   homepage: http://deepspeed.ai
