@@ -2,8 +2,8 @@ schema_version: 1
 
 context:
   name: deepspeed
-  version: "0.19.9"
-  build_number: 2
+  version: "0.20.0"
+  build_number: 0
   torch_proc_type: ${{ "cuda" if cuda_compiler_version != "None" else "cpu" }}
   build_string_prefix: ${{ "cuda" ~ cuda_compiler_version | version_to_buildstring if cuda_compiler_version != "None" else "cpu" }}
 
@@ -13,7 +13,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/${{ name }}-${{ version }}.tar.gz
-  sha256: e14b514e243a92ad80bd92f74c835ef76a5c27eec23fae019807458fc9a8cb95
+  sha256: 67195f94b2bc63350f15f2da9126b489122261d2c858f34120f4aa33910bca7d
   patches:
     # Let DS_CPU_ARCH / DS_SIMD_WIDTH override build-machine detection
     # (-march=native) so pre-compiled CPU ops are portable, and pass link
