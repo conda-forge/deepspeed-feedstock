@@ -1,8 +1,8 @@
 diff --git a/op_builder/builder.py b/op_builder/builder.py
-index 58350ba..15c2be9 100644
+index 4427c64..a3ee17f 100644
 --- a/op_builder/builder.py
 +++ b/op_builder/builder.py
-@@ -426,6 +426,11 @@ class OpBuilder(ABC):
+@@ -394,6 +394,11 @@ class OpBuilder(ABC):
          return [x for x in args if len(x) > 0]
  
      def cpu_arch(self):
@@ -11,10 +11,10 @@ index 58350ba..15c2be9 100644
 +        # An empty value means no -march/-mcpu flag is added.
 +        if os.environ.get("DS_CPU_ARCH") is not None:
 +            return os.environ["DS_CPU_ARCH"]
-         try:
-             from cpuinfo import get_cpu_info
-         except ImportError as e:
-@@ -527,6 +532,10 @@ class OpBuilder(ABC):
+         arch, _ = _cpu_info()
+         if (arch or '').startswith('PPC_'):
+             # gcc does not provide -march on PowerPC, use -mcpu instead
+@@ -445,6 +450,10 @@ class OpBuilder(ABC):
          return hwcap is not None and hwcap & (1 << (ord('V') - ord('A'))) != 0  # COMPAT_HWCAP_ISA_V
  
      def simd_width(self):
@@ -22,24 +22,14 @@ index 58350ba..15c2be9 100644
 +        # DS_SIMD_WIDTH=-D__SCALAR__ for a portable build.
 +        if os.environ.get("DS_SIMD_WIDTH") is not None:
 +            return os.environ["DS_SIMD_WIDTH"]
-         try:
-             from cpuinfo import get_cpu_info
-         except ImportError as e:
+         arch, flags = _cpu_info()
+         if arch == 'X86_64':
+             if 'avx512f' in flags:
 diff --git a/op_builder/cpu/builder.py b/op_builder/cpu/builder.py
-index d881842..e80a27e 100644
+index 658ab3a..f57ba23 100644
 --- a/op_builder/cpu/builder.py
 +++ b/op_builder/cpu/builder.py
-@@ -25,7 +25,8 @@ class CPUOpBuilder(OpBuilder):
-                                    sources=self.strip_empty_entries(self.sources()),
-                                    include_dirs=include_dirs,
-                                    libraries=self.strip_empty_entries(self.libraries_args()),
--                                   extra_compile_args=compile_args)
-+                                   extra_compile_args=compile_args,
-+                                   extra_link_args=self.strip_empty_entries(self.extra_ldflags()))
- 
-         return cpp_ext
- 
-@@ -36,5 +37,9 @@ class CPUOpBuilder(OpBuilder):
+@@ -21,5 +21,9 @@ class CPUOpBuilder(OpBuilder):
          args += [CPU_ARCH, '-fopenmp', SIMD_WIDTH]
          return args
  
@@ -49,3 +39,36 @@ index d881842..e80a27e 100644
 +
      def libraries_args(self):
          return []
+diff --git a/op_builder/cpu/reflow.py b/op_builder/cpu/reflow.py
+index ac3217f..1924d8a 100644
+--- a/op_builder/cpu/reflow.py
++++ b/op_builder/cpu/reflow.py
+@@ -1,6 +1,8 @@
+ # SPDX-License-Identifier: Apache-2.0
+ # DeepSpeed Team
+ 
++import os
++
+ from .builder import CPUOpBuilder
+ 
+ try:
+@@ -19,6 +21,9 @@ class ReflowCPUOp(CPUOpBuilder):
+ 
+     def simd_width(self):
+         width = super().simd_width()
++        if os.environ.get("DS_SIMD_WIDTH") is not None:
++            # Packager override: target that SIMD width, not the build machine
++            return width
+         if width == '-D__AVX512__':
+             flags = self._cpu_flags()
+             required = {'avx512f', 'avx512bw', 'avx512dq', 'avx512vl'}
+@@ -46,6 +51,9 @@ class ReflowCPUOp(CPUOpBuilder):
+             if verbose:
+                 self.warning(f'{self.name} requires an x86 CPU with AVX2 or AVX-512')
+             return False
++        if os.environ.get("DS_SIMD_WIDTH") is not None:
++            # Packager override: do not check the build machine's CPU flags
++            return super().is_compatible(verbose)
+         flags = self._cpu_flags()
+         required_flags = {'avx2', 'fma', 'f16c'}
+         if simd_width == '-D__AVX512__':

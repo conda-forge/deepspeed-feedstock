@@ -16,8 +16,8 @@ source:
   sha256: cf5b12a6b4a3b789b5f67d8e9c4b4200b4ecd9a90de2042afcbdb731ad68619a
   patches:
     # Let DS_CPU_ARCH / DS_SIMD_WIDTH override build-machine detection
-    # (-march=native) so pre-compiled CPU ops are portable, and pass link
-    # flags (-fopenmp, -laio) when pre-compiling CPU ops.
+    # (-march=native, CPU flag checks) so pre-compiled CPU ops are portable,
+    # and link the CPU ops with -fopenmp.
     - patches/0001-Make-pre-compiled-CPU-ops-portable-and-fully-linked.patch
 
 build:
