@@ -1,11 +1,13 @@
 """Check that DeepSpeed's ops were pre-compiled and load without a JIT build.
 
-Usage: python test_ops.py {cpu,cuda}
+Usage: python test_ops.py {cpu,cuda} MICROARCH_LEVEL
 """
 import os
 import sys
 
 accelerator = sys.argv[1]
+# x86_64 microarch level of the build variant (1 on other platforms)
+microarch_level = int(sys.argv[2])
 # The pre-compiled ops are only used when the runtime accelerator matches the
 # one they were built for. Without a GPU (as on CI) DeepSpeed would pick "cpu",
 # and on Apple Silicon it would pick "mps", so set it explicitly.
@@ -26,6 +28,7 @@ print("installed_ops:", installed_ops)
 print("torch_info:", torch_info)
 assert torch_info["version"] != "0.0", torch_info
 
+reflow_ops = {"reflow_cpu_adam", "reflow_cpu_lion"}
 if accelerator == "cpu":
     expected = ["cpu_adam", "cpu_adagrad", "cpu_lion", "fused_adam"]
     if sys.platform == "linux":
@@ -34,7 +37,12 @@ else:
     # Keep in sync with the DS_BUILD_*=0 settings in build.sh
     disabled = {"cutlass_ops", "ragged_device_ops", "evoformer_attn"}
     assert torch_info["cuda_version"] != "0.0", torch_info
-    expected = sorted(set(ALL_OPS) - disabled)
+    expected = sorted(set(ALL_OPS) - disabled - reflow_ops)
+
+# The reflow CPU optimizers need AVX2 or AVX-512, so they are only built for
+# the x86_64 microarch level 3 and 4 variants.
+if microarch_level >= 3:
+    expected += sorted(reflow_ops)
 
 missing = [op for op in expected if not installed_ops.get(op)]
 assert not missing, f"ops not pre-compiled: {missing}"

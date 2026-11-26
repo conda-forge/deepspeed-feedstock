@@ -2,8 +2,8 @@ schema_version: 1
 
 context:
   name: deepspeed
-  version: "0.20.0"
-  build_number: 1
+  version: "0.20.1"
+  build_number: 0
   torch_proc_type: ${{ "cuda" if cuda_compiler_version != "None" else "cpu" }}
   build_string_prefix: ${{ "cuda" ~ cuda_compiler_version | version_to_buildstring if cuda_compiler_version != "None" else "cpu" }}
 
@@ -13,11 +13,11 @@ package:
 
 source:
   url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/${{ name }}-${{ version }}.tar.gz
-  sha256: 67195f94b2bc63350f15f2da9126b489122261d2c858f34120f4aa33910bca7d
+  sha256: cf5b12a6b4a3b789b5f67d8e9c4b4200b4ecd9a90de2042afcbdb731ad68619a
   patches:
     # Let DS_CPU_ARCH / DS_SIMD_WIDTH override build-machine detection
-    # (-march=native) so pre-compiled CPU ops are portable, and pass link
-    # flags (-fopenmp, -laio) when pre-compiling CPU ops.
+    # (-march=native, CPU flag checks) so pre-compiled CPU ops are portable,
+    # and link the CPU ops with -fopenmp.
     - patches/0001-Make-pre-compiled-CPU-ops-portable-and-fully-linked.patch
 
 build:
@@ -102,7 +102,7 @@ tests:
       recipe:
         - test_ops.py
     script:
-      - ${CROSSCOMPILING_EMULATOR} python test_ops.py ${{ torch_proc_type }}
+      - ${CROSSCOMPILING_EMULATOR} python test_ops.py ${{ torch_proc_type }} ${{ microarch_level | default(1) }}
       - ${CROSSCOMPILING_EMULATOR} python -m pip check
   - requirements:
       run:
