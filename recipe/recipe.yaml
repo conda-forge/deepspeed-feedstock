@@ -102,7 +102,7 @@ tests:
       recipe:
         - test_ops.py
     script:
-      - ${CROSSCOMPILING_EMULATOR} python test_ops.py ${{ torch_proc_type }}
+      - ${CROSSCOMPILING_EMULATOR} python test_ops.py ${{ torch_proc_type }} ${{ microarch_level | default(1) }}
       - ${CROSSCOMPILING_EMULATOR} python -m pip check
   - requirements:
       run:
